@@ -1,18 +1,19 @@
 import { EmptyLayout } from '@/components/layouts';
-import { AppPropsWithLayout } from '@/models/common';
+import { AppPropsWithLayout } from '@/models/index';
 import '@/styles/globals.css';
 import { createEmotionCache, theme } from '@/utils/mui';
 import { CacheProvider, ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
-import type { AppProps } from 'next/app';
+import { SessionProvider } from 'next-auth/react';
 
 const clientSideEmotionCache = createEmotionCache();
 
-const App = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: AppPropsWithLayout) => {
+const App = ({ Component, pageProps: { session, ...pageProps }, emotionCache = clientSideEmotionCache }: AppPropsWithLayout) => {
     
     const Layout = Component.Layout ?? EmptyLayout
 
     return (
+      <SessionProvider session={session}>
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
@@ -23,6 +24,7 @@ const App = ({ Component, pageProps, emotionCache = clientSideEmotionCache }: Ap
                 {/* </SWRConfig> */}
             </ThemeProvider>
         </CacheProvider>
+      </SessionProvider>
     )
 }
 
